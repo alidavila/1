@@ -1,0 +1,7 @@
+{
+  "buildCommand": "npm run vercel-build",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "regions": ["cdg1", "iad1"],
+  "outputDirectory": ".next"
+} 

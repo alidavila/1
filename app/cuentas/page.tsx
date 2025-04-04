@@ -7,7 +7,7 @@ import {
   FaHome, FaWallet, FaSync, FaSyncAlt, FaChartPie, 
   FaInfoCircle, FaRegClock, FaPlus, FaRegEye 
 } from 'react-icons/fa';
-import { Cuenta, TipoCuenta } from '@/types';
+import { Cuenta, TipoCuenta } from '../../types';
 
 export default function Cuentas() {
   const [cuentas, setCuentas] = useState<Cuenta[]>([]);

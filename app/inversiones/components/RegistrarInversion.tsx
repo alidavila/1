@@ -7,7 +7,7 @@ import {
   FaTimes, FaSave, FaBitcoin, FaBuilding, FaGlobe, FaInfoCircle, 
   FaChevronDown
 } from 'react-icons/fa';
-import { Inversion, TipoActivo } from '@/types';
+import { Inversion, TipoActivo } from '../../../types';
 
 interface RegistrarInversionProps {
   inversion: Inversion | null;

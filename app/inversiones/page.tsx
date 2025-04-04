@@ -13,7 +13,7 @@ import { RegistrarInversion } from './components/RegistrarInversion';
 import { ListaInversiones } from './components/ListaInversiones';
 import { GraficoEvolucion } from './components/GraficoEvolucion';
 import { CalculadoraInteres } from './components/CalculadoraInteres';
-import { Inversion, TipoActivo } from '@/types';
+import { Inversion, TipoActivo } from '../../types';
 
 export default function Inversiones() {
   const [inversiones, setInversiones] = useState<Inversion[]>([]);

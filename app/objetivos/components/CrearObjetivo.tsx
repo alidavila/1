@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FaCoins, FaRegCalendarAlt, FaCheck, FaTimes, FaStar,
-  FaHome, FaCar, FaPlane, FaCreditCard, FaStore, FaChartLine
+  FaHome, FaCar, FaPlane, FaCreditCard, FaStore, FaChartLine, FaChevronDown
 } from 'react-icons/fa';
-import { Objetivo, ObjetivoCategoria } from '@/types';
+import { Objetivo, ObjetivoCategoria } from '../../../types';
 
 interface CrearObjetivoProps {
   objetivo: Objetivo | null;

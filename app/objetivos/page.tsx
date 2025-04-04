@@ -10,7 +10,7 @@ import {
 import { CrearObjetivo } from './components/CrearObjetivo';
 import { ObjetivoCard } from './components/ObjetivoCard';
 import { ObjetivosCompletados } from './components/ObjetivosCompletados';
-import { Objetivo, ObjetivoCategoria } from '@/types';
+import { Objetivo, ObjetivoCategoria } from '../../types';
 
 export default function Objetivos() {
   const [objetivosActivos, setObjetivosActivos] = useState<Objetivo[]>([]);

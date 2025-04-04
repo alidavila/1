@@ -9,6 +9,8 @@ import {
   FaSearch, FaDownload, FaHome, FaQuestion, FaRobot, FaCreditCard, 
   FaRegLightbulb, FaPaperPlane
 } from 'react-icons/fa';
+// Importar tipos correctamente desde la ruta types
+import { Transaccion, CategoriaGasto, DatosAnalisis, PreguntaAnalisis, Deuda } from '../../types';
 
 export default function Analisis() {
   const [activeTab, setActiveTab] = useState('general');
@@ -124,7 +126,7 @@ export default function Analisis() {
     : '0';
   
   // Datos de ejemplo de deudas
-  const deudas = [
+  const deudas: Deuda[] = [
     {
       id: 1,
       acreedor: 'Banco Santander',
@@ -464,7 +466,6 @@ export default function Analisis() {
               {isAnswering ? (
                 <div className="flex items-center justify-center h-full">
                   <motion.div 
-                    className="text-[#eab308]"
                     animate={{ 
                       scale: [1, 1.2, 1],
                       opacity: [0.5, 1, 0.5]

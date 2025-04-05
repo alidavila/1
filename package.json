@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "next dev -p 4000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4000",
     "lint": "next lint",
     "vercel-build": "next build",
-    "test-build": "next build && next start"
+    "test-build": "next build && next start -p 4000"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

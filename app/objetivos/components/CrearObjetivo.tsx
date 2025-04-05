@@ -54,7 +54,7 @@ export const CrearObjetivo: React.FC<CrearObjetivoProps> = ({
         fechaEstimada: fechaEstimada.toISOString().split('T')[0]
       }));
     }
-  }, [objetivo]);
+  }, [objetivo, estadoInicial]);
   
   // Manejar cambios en los campos del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

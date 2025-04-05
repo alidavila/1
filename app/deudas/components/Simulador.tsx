@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChartLine, FaCoins, FaCalendarAlt, FaTimes } from 'react-icons/fa';
 
@@ -24,9 +24,7 @@ interface SimuladorProps {
 
 export const Simulador: React.FC<SimuladorProps> = ({ deuda, onClose, modo }) => {
   const [monto, setMonto] = useState<number>(
-    modo === 'mas' 
-      ? Math.round(deuda.cuotaMensual * 1.5) 
-      : Math.round(deuda.cuotaMensual * 0.8)
+    modo === 'mas' ? deuda.cuotaMensual * 1.5 : deuda.cuotaMensual * 0.75
   );
   const [resultados, setResultados] = useState<{
     tiempoOriginal: number;
@@ -37,36 +35,8 @@ export const Simulador: React.FC<SimuladorProps> = ({ deuda, onClose, modo }) =>
     ahorroInteres: number;
   } | null>(null);
   
-  useEffect(() => {
-    calcularSimulacion();
-  }, [monto]);
-  
-  const calcularSimulacion = () => {
-    // Calcular amortización original
-    const resultadoOriginal = calcularAmortizacion(
-      deuda.saldoActual, 
-      deuda.tasaInteres / 100 / 12, 
-      deuda.cuotaMensual
-    );
-    
-    // Calcular nueva amortización
-    const resultadoNuevo = calcularAmortizacion(
-      deuda.saldoActual,
-      deuda.tasaInteres / 100 / 12,
-      monto
-    );
-    
-    setResultados({
-      tiempoOriginal: resultadoOriginal.meses,
-      tiempoNuevo: resultadoNuevo.meses,
-      interesOriginal: resultadoOriginal.interesTotal,
-      interesNuevo: resultadoNuevo.interesTotal,
-      ahorroTiempo: resultadoOriginal.meses - resultadoNuevo.meses,
-      ahorroInteres: resultadoOriginal.interesTotal - resultadoNuevo.interesTotal
-    });
-  };
-  
-  const calcularAmortizacion = (saldo: number, tasaMensual: number, cuota: number) => {
+  // Función de cálculo de amortización
+  const calcularAmortizacion = useCallback((saldo: number, tasaMensual: number, cuota: number) => {
     let balance = saldo;
     let meses = 0;
     let interesTotal = 0;
@@ -94,7 +64,38 @@ export const Simulador: React.FC<SimuladorProps> = ({ deuda, onClose, modo }) =>
       meses,
       interesTotal
     };
-  };
+  }, []);
+  
+  // Función de cálculo de simulación
+  const calcularSimulacion = useCallback(() => {
+    // Calcular amortización original
+    const resultadoOriginal = calcularAmortizacion(
+      deuda.saldoActual, 
+      deuda.tasaInteres / 100 / 12, 
+      deuda.cuotaMensual
+    );
+    
+    // Calcular nueva amortización
+    const resultadoNuevo = calcularAmortizacion(
+      deuda.saldoActual,
+      deuda.tasaInteres / 100 / 12,
+      monto
+    );
+    
+    setResultados({
+      tiempoOriginal: resultadoOriginal.meses,
+      tiempoNuevo: resultadoNuevo.meses,
+      interesOriginal: resultadoOriginal.interesTotal,
+      interesNuevo: resultadoNuevo.interesTotal,
+      ahorroTiempo: resultadoOriginal.meses - resultadoNuevo.meses,
+      ahorroInteres: resultadoOriginal.interesTotal - resultadoNuevo.interesTotal
+    });
+  }, [deuda.saldoActual, deuda.tasaInteres, deuda.cuotaMensual, monto, calcularAmortizacion]);
+  
+  // Efecto para recalcular
+  useEffect(() => {
+    calcularSimulacion();
+  }, [calcularSimulacion]);
   
   return (
     <motion.div

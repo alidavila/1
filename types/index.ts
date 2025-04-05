@@ -91,16 +91,19 @@ export interface PreguntaAnalisis {
   respuesta: string;
 }
 
+// Tipos para deudas
+export type TipoDeuda = 'tdc' | 'prestamo' | 'credito' | 'otro';
+
 export interface Deuda {
-  id: number;
+  id: string;
   acreedor: string;
-  tipo: string;
-  saldoInicial: number;
+  tipo: TipoDeuda;
   saldoActual: number;
   cuotaMensual: number;
-  plazoTotal: number;
-  plazoRestante: number;
+  plazoTotal: number; // en meses
+  plazoRestante: number; // en meses
   tasaInteres: number;
+  fechaInicio: string;
 }
 
 // Tipos para el módulo de Inventario

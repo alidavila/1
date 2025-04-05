@@ -128,37 +128,37 @@ export default function Analisis() {
   // Datos de ejemplo de deudas
   const deudas: Deuda[] = [
     {
-      id: 1,
+      id: "1",
       acreedor: 'Banco Santander',
-      tipo: 'Préstamo Personal',
-      saldoInicial: 10000,
+      tipo: 'prestamo',
       saldoActual: 7500,
       cuotaMensual: 350,
       plazoTotal: 36,
       plazoRestante: 24,
       tasaInteres: 12.5,
+      fechaInicio: '2022-06-15'
     },
     {
-      id: 2,
+      id: "2",
       acreedor: 'American Express',
-      tipo: 'Tarjeta de Crédito',
-      saldoInicial: 5000,
+      tipo: 'tdc',
       saldoActual: 3200,
       cuotaMensual: 200,
       plazoTotal: 24,
       plazoRestante: 16,
       tasaInteres: 18.9,
+      fechaInicio: '2022-09-01'
     },
     {
-      id: 3,
+      id: "3",
       acreedor: 'BBVA',
-      tipo: 'Hipoteca',
-      saldoInicial: 150000,
+      tipo: 'credito',
       saldoActual: 130000,
       cuotaMensual: 850,
       plazoTotal: 240,
       plazoRestante: 210,
       tasaInteres: 7.5,
+      fechaInicio: '2021-03-10'
     }
   ];
   
@@ -206,7 +206,7 @@ export default function Analisis() {
     {
       id: 8,
       pregunta: "¿Puedo refinanciar mis deudas a una tasa menor para pagar menos intereses?",
-      respuesta: `El refinanciamiento sería beneficioso principalmente para tu tarjeta de crédito (${deudas.find(d => d.tipo === 'Tarjeta de Crédito')?.tasaInteres}%) y préstamo personal (${deudas.find(d => d.tipo === 'Préstamo Personal')?.tasaInteres}%). Consolidando estas deudas podrías ahorrar aproximadamente $${Math.round((deudas.find(d => d.tipo === 'Tarjeta de Crédito')?.saldoActual || 0) * 0.08)} en intereses anualmente.`
+      respuesta: `El refinanciamiento sería beneficioso principalmente para tu tarjeta de crédito (${deudas.find(d => d.tipo === 'tdc')?.tasaInteres}%) y préstamo personal (${deudas.find(d => d.tipo === 'prestamo')?.tasaInteres}%). Consolidando estas deudas podrías ahorrar aproximadamente $${Math.round((deudas.find(d => d.tipo === 'tdc')?.saldoActual || 0) * 0.08)} en intereses anualmente.`
     },
     {
       id: 9,

@@ -1,0 +1,60 @@
+{
+    "version": "0.2",
+    "language": "en,es",
+    "languageSettings": [
+        {
+            "languageId": "typescript,javascript,typescriptreact,javascriptreact",
+            "locale": "*",
+            "ignoreRegExpList": [
+                "/\\/\\*[\\s\\S]*?\\*\\//g",
+                "/\\/\\/[^\\n]*(?:\\n|$)/g"
+            ]
+        }
+    ],
+    "ignorePaths": [
+        "node_modules/**",
+        ".next/**",
+        "dist/**",
+        "package-lock.json"
+    ],
+    "words": [
+        "dante",
+        "cSpell",
+        "Santander",
+        "BBVA",
+        "ingresos",
+        "gastos",
+        "meses",
+        "enero",
+        "febrero",
+        "marzo",
+        "junio",
+        "vivienda",
+        "alimentación",
+        "transporte",
+        "entretenimiento",
+        "servicios",
+        "salario",
+        "mensual",
+        "inversiones",
+        "otros",
+        "alquiler",
+        "gasolina",
+        "dividendos",
+        "calcular",
+        "totales",
+        "ahorro",
+        "deudas",
+        "acreedor",
+        "tipo",
+        "prestamo",
+        "saldo",
+        "cuota",
+        "plazo",
+        "restante",
+        "tasa",
+        "interes",
+        "fecha",
+        "inicio"
+    ]
+} 

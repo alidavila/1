@@ -1,3 +1,4 @@
+// cSpell:disable
 "use client";
 
 import { useState } from 'react';

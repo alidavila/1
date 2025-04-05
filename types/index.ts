@@ -127,4 +127,36 @@ export interface Cuenta {
   tipo: TipoCuenta;
   saldo: number;
   ultimaActualizacion: string;
-} 
+}
+
+// Tipos para el Dashboard Financiero
+export interface PatrimonioData {
+  total: number;
+  estado: 'positivo' | 'equilibrio' | 'negativo';
+}
+
+export interface FlujoCajaMes {
+  mes: string;
+  ingresos: number;
+  egresos: number;
+  resultado: number;
+}
+
+export type FlujoCajaData = FlujoCajaMes[];
+
+export interface FinancialData {
+  patrimonio: PatrimonioData;
+  flujoCaja: FlujoCajaData;
+  consejos: string[];
+  etiquetas: {
+    ingresos: string;
+    gastos: string;
+    presupuesto: string;
+    ahorro: string;
+    inversiones: string;
+    consejos: string;
+  };
+}
+
+// Tipos para FloatingTags
+export type EtiquetaKey = 'ingresos' | 'gastos' | 'presupuesto' | 'ahorro' | 'inversiones' | 'consejos'; 

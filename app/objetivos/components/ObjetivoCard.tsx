@@ -7,7 +7,7 @@ import {
   FaHome, FaCar, FaPlane, FaCreditCard, 
   FaStore, FaChartLine
 } from 'react-icons/fa';
-import { Objetivo } from '@/types';
+import { Objetivo } from '../../../types';
 
 interface ObjetivoCardProps {
   objetivo: Objetivo;

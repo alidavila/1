@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Inversion } from '@/types';
+import { Inversion } from '../../../types';
 
 interface GraficoEvolucionProps {
   inversiones: Inversion[];

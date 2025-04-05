@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p 4000",
     "lint": "next lint",
-    "vercel-build": "next build && (cp -r types ./src/ || copy types src\\types)",
+    "vercel-build": "next build",
     "test-build": "next build && next start -p 4000"
   },
   "dependencies": {

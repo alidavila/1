@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { FaHome } from 'react-icons/fa';
 import CalendarioHeader from './components/CalendarioHeader';
 import EventoFinanciero from './components/EventoFinanciero';
 import RegistrarEvento from './components/RegistrarEvento';
@@ -161,9 +163,20 @@ const CalendarioPage = () => {
         transition={{ duration: 0.5 }}
         className="max-w-6xl mx-auto"
       >
-        <h1 className="text-3xl font-bold text-gold mb-8 flex items-center">
-          <span className="mr-2">📆</span> Calendario Económico
-        </h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gold flex items-center">
+            <span className="mr-2">📆</span> Calendario Económico
+          </h1>
+          <Link href="/">
+            <motion.div
+              className="flex items-center gap-2 text-white/70 hover:text-white"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaHome /> Inicio
+            </motion.div>
+          </Link>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Panel lateral con resumen y filtros */}

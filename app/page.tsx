@@ -45,43 +45,70 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
   section: MainSection, 
   isActive: boolean,
   onHover: (title: string | null) => void
-}) => (
-  <motion.div
-    className="absolute z-10"
-    style={{
-      top: section.position.top,
-      left: section.position.left,
-      transform: `rotate(${section.position.rotate}deg)`,
-    }}
-    initial={{ opacity: 0, scale: 0.5 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5 }}
-    onMouseEnter={() => onHover(section.title)}
-    onMouseLeave={() => onHover(null)}
-  >
-    <Link href={section.path}>
-      <div className="flex flex-col items-center group">
-        <motion.div
-          className="text-[#eab308] text-3xl mb-2 group-hover:text-yellow-300"
-          whileHover={{ 
-            scale: 1.2,
-            textShadow: "0 0 15px rgba(234,179,8,0.8)"
-          }}
-        >
-          {section.icon}
-        </motion.div>
-        <motion.h3 
-          className="text-lg font-light text-yellow-500/90 group-hover:text-yellow-300"
-          whileHover={{ 
-            textShadow: "0 0 8px rgba(234,179,8,0.7)"
-          }}
-        >
-          {section.title}
-        </motion.h3>
-      </div>
-    </Link>
-  </motion.div>
-));
+}) => {
+  // Calcular dirección de flotación basada en la posición
+  const isLeftSide = parseFloat(section.position.left) < 50;
+  const floatDirection = isLeftSide ? -5 : 5; // Flotar hacia adentro
+  
+  return (
+    <motion.div
+      className="absolute z-10"
+      style={{
+        top: section.position.top,
+        left: section.position.left,
+        transform: `rotate(${section.position.rotate}deg)`,
+      }}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ 
+        opacity: 1, 
+        scale: 1,
+        x: [0, floatDirection, 0], // Efecto de flotación horizontal
+        y: [0, -7, 0] // Efecto de flotación vertical
+      }}
+      transition={{ 
+        duration: 0.5, 
+        x: {
+          duration: 7,
+          repeat: Infinity,
+          ease: "easeInOut",
+          // Añadir un retraso aleatorio para cada sección
+          delay: Math.random() * 2
+        },
+        y: {
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+          // Añadir un retraso aleatorio para cada sección
+          delay: Math.random() * 2
+        }
+      }}
+      onMouseEnter={() => onHover(section.title)}
+      onMouseLeave={() => onHover(null)}
+    >
+      <Link href={section.path}>
+        <div className="flex flex-col items-center group">
+          <motion.div
+            className="text-[#eab308] text-3xl mb-2 group-hover:text-yellow-300"
+            whileHover={{ 
+              scale: 1.2,
+              textShadow: "0 0 15px rgba(234,179,8,0.8)"
+            }}
+          >
+            {section.icon}
+          </motion.div>
+          <motion.h3 
+            className="text-lg font-light text-yellow-500/90 group-hover:text-yellow-300"
+            whileHover={{ 
+              textShadow: "0 0 8px rgba(234,179,8,0.7)"
+            }}
+          >
+            {section.title}
+          </motion.h3>
+        </div>
+      </Link>
+    </motion.div>
+  );
+});
 
 // Componente de respuesta
 const ResponseBox = memo(({ activeSection, response, mainSections }: {
@@ -129,11 +156,22 @@ const MonkImage = memo(() => (
       <div className="absolute inset-0 rounded-full bg-yellow-400/2 animate-pulse delay-700 filter blur-xl" 
            style={{transform: 'scale(0.85)'}}></div>
       
-      {/* Imagen del monje */}
+      {/* Imagen del monje con animación de flotación */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          y: [0, -15, 0]  // Efecto de flotación vertical
+        }}
+        transition={{ 
+          duration: 0.7,
+          y: {
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        }}
         className="relative h-full aspect-square z-20"
       >
         <Image
@@ -336,7 +374,7 @@ export default function Home() {
             />
             <SubmitButton isLoading={isLoading} />
           </form>
-        </div>
+          </div>
         
         {/* Contenedor central con el monje y las secciones */}
         <div className="relative w-full max-w-4xl aspect-square mt-0 -mt-4">
@@ -368,8 +406,8 @@ export default function Home() {
         <div className="relative z-10 mt-auto text-center text-xs text-yellow-500/30">
           <p>DANTE © {new Date().getFullYear()} — Tu guía espiritual financiera</p>
         </div>
-      </div>
-      
+            </div>
+            
       {/* Estilos CSS para efectos de neón y brillos */}
       <style jsx global>{`
         .golden-glow {
@@ -379,6 +417,12 @@ export default function Home() {
         @keyframes pulse {
           0%, 100% { opacity: 0.6; }
           50% { opacity: 1; }
+        }
+        
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
         }
       `}</style>
     </main>
@@ -421,19 +465,19 @@ const Dashboard = memo(({ dashboardData }: { dashboardData: DashboardData }) => 
         <div className="mt-3 flex justify-between text-xs text-white/60">
           <span>Enero</span>
           <span>Julio</span>
-        </div>
+            </div>
         
         <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-2 gap-2">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-green-400"></div>
             <span className="text-xs text-green-400">+${dashboardData.ingresos.toLocaleString()}</span>
-          </div>
+            </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-red-400"></div>
             <span className="text-xs text-red-400">-${dashboardData.gastos.toLocaleString()}</span>
-          </div>
-        </div>
-      </div>
+            </div>
+            </div>
+            </div>
       
       {/* Gráfico de activos vs pasivos */}
       <div className="col-span-1 bg-black/60 rounded-lg p-4 border border-yellow-500/20">
@@ -530,7 +574,7 @@ const Dashboard = memo(({ dashboardData }: { dashboardData: DashboardData }) => 
           <div className="flex justify-between items-center p-2 rounded bg-black/40 border border-white/5">
             <div className="flex items-center">
               <div className="w-2 h-8 bg-yellow-400 rounded-l-sm mr-2"></div>
-              <div>
+          <div>
                 <span className="text-xs text-white/80 block">Meta ahorro</span>
                 <span className="text-xs text-white/50 block">Viaje verano</span>
               </div>
@@ -542,8 +586,8 @@ const Dashboard = memo(({ dashboardData }: { dashboardData: DashboardData }) => 
               <span className="text-xs text-yellow-400/70">65%</span>
             </div>
           </div>
+          </div>
         </div>
-      </div>
     </div>
   </motion.div>
 ));

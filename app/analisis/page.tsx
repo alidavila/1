@@ -329,11 +329,29 @@ export default function Analisis() {
     
     return (
       <div className="mt-6">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg text-[#eab308] capitalize">
-            {activeTab === 'gastos' ? 'Gastos por Categoría' : 'Fuentes de Ingreso'}
-          </h3>
-          <button className="text-xs text-white/70 hover:text-white">Ver Detalle</button>
+        <div className="flex flex-col gap-2 mb-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg text-[#eab308] capitalize">
+              Distribución por {activeTab === 'general' ? 'Categoría' : activeTab === 'gastos' ? 'Gastos' : 'Ingresos'}
+            </h3>
+          </div>
+          
+          {/* Tabs movidos del encabezado a aquí */}
+          <div className="flex bg-black/30 border border-white/10 rounded-lg overflow-hidden self-start">
+            {['general', 'ingresos', 'gastos'].map(tab => (
+              <motion.button
+                key={tab}
+                className={`px-4 py-1.5 text-xs capitalize ${
+                  activeTab === tab ? 'bg-[#eab308] text-black font-medium' : 'text-white/70 hover:text-white'
+                }`}
+                onClick={() => setActiveTab(tab)}
+                whileHover={activeTab !== tab ? { backgroundColor: 'rgba(255, 255, 255, 0.05)' } : {}}
+                whileTap={{ scale: 0.95 }}
+              >
+                {tab}
+              </motion.button>
+            ))}
+          </div>
         </div>
         
         <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
@@ -359,7 +377,7 @@ export default function Analisis() {
             
             <div className="absolute inset-[25%] bg-[#050505] rounded-full flex items-center justify-center">
               <span className="font-medium text-sm">
-                {selectedCategory || (activeTab === 'gastos' ? 'Gastos' : 'Ingresos')}
+                {selectedCategory || (activeTab === 'gastos' ? 'Gastos' : activeTab === 'ingresos' ? 'Ingresos' : 'Categorías')}
               </span>
             </div>
           </div>
@@ -686,9 +704,9 @@ export default function Analisis() {
         </motion.h2>
       </header>
       
-      {/* Selector de período */}
+      {/* Selector de período - ahora solo con el selector de tiempo, sin los tabs */}
       <motion.div
-        className="flex justify-between items-center mb-6"
+        className="flex items-center mb-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
@@ -706,23 +724,6 @@ export default function Analisis() {
             <option value="quarter">Último trimestre</option>
             <option value="year">Último año</option>
           </select>
-        </div>
-        
-        {/* Tabs */}
-        <div className="flex bg-black/30 border border-white/10 rounded-lg overflow-hidden">
-          {['general', 'ingresos', 'gastos'].map(tab => (
-            <motion.button
-              key={tab}
-              className={`px-4 py-2 text-sm capitalize ${
-                activeTab === tab ? 'bg-[#eab308] text-black font-medium' : 'text-white/70 hover:text-white'
-              }`}
-              onClick={() => setActiveTab(tab)}
-              whileHover={activeTab !== tab ? { backgroundColor: 'rgba(255, 255, 255, 0.05)' } : {}}
-              whileTap={{ scale: 0.95 }}
-            >
-              {tab}
-            </motion.button>
-          ))}
         </div>
       </motion.div>
       

@@ -14,6 +14,13 @@ export default function Cuentas() {
   const [cuentas, setCuentas] = useState<Cuenta[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [mostrarGrafico, setMostrarGrafico] = useState(true);
+  const [cuentaSeleccionada, setCuentaSeleccionada] = useState<Cuenta | null>(null);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [nuevaCuenta, setNuevaCuenta] = useState<Partial<Cuenta>>({
+    nombre: '',
+    tipo: 'corriente',
+    saldo: 0
+  });
   
   // Datos simulados para las transacciones
   const transactions: Transaccion[] = [
@@ -201,6 +208,64 @@ export default function Cuentas() {
       default:
         return tipo;
     }
+  };
+  
+  // Manejar clic en el botón de ver detalles
+  const handleVerDetalles = (cuenta: Cuenta) => {
+    setCuentaSeleccionada(cuenta);
+    setMostrarFormulario(false); // Cerrar el formulario si estaba abierto
+  };
+  
+  // Manejar clic en el botón de agregar cuenta
+  const handleAgregarCuenta = () => {
+    setMostrarFormulario(true);
+    setCuentaSeleccionada(null); // Cerrar los detalles si estaban abiertos
+    setNuevaCuenta({
+      nombre: '',
+      tipo: 'corriente',
+      saldo: 0
+    });
+  };
+  
+  // Manejar cambios en el formulario de nueva cuenta
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNuevaCuenta({
+      ...nuevaCuenta,
+      [name]: name === 'saldo' ? parseFloat(value) || 0 : value
+    });
+  };
+  
+  // Manejar envío del formulario
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validar datos
+    if (!nuevaCuenta.nombre || !nuevaCuenta.tipo) {
+      return; // Implementar validación visual
+    }
+    
+    // Crear nueva cuenta
+    const nuevaCuentaCompleta: Cuenta = {
+      id: `${cuentas.length + 1}`,
+      nombre: nuevaCuenta.nombre || '',
+      tipo: nuevaCuenta.tipo as TipoCuenta || 'corriente',
+      saldo: nuevaCuenta.saldo || 0,
+      ultimaActualizacion: new Date().toISOString()
+    };
+    
+    // Actualizar lista de cuentas
+    setCuentas([...cuentas, nuevaCuentaCompleta]);
+    
+    // Cerrar formulario
+    setMostrarFormulario(false);
+  };
+  
+  // Filtrar transacciones por cuenta seleccionada (simulado)
+  const filtrarTransaccionesPorCuenta = (cuentaId: string) => {
+    // En un entorno real, aquí filtraríamos las transacciones por ID de cuenta
+    // Para simplificar, solo mostramos las primeras 4 transacciones
+    return transactions.slice(0, 4);
   };
   
   // Renderizar gráfico de pastel para las cuentas
@@ -407,6 +472,7 @@ export default function Cuentas() {
               className="p-2 rounded-lg bg-[#eab308] text-black"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handleAgregarCuenta}
             >
               <FaPlus />
             </motion.button>
@@ -522,6 +588,7 @@ export default function Cuentas() {
                         className="p-2 rounded-lg bg-black/30 text-white/70 hover:text-white"
                         whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => handleVerDetalles(cuenta)}
                       >
                         <FaRegEye />
                       </motion.button>
@@ -533,6 +600,201 @@ export default function Cuentas() {
           </div>
         )}
       </motion.div>
+      
+      {/* Detalles de la cuenta seleccionada */}
+      {cuentaSeleccionada && (
+        <motion.div
+          className="bg-black/20 border border-[#eab308]/30 rounded-lg p-6 mt-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-2">
+              <FaWallet className="text-[#eab308]" />
+              <h3 className="text-lg">Detalles de la Cuenta</h3>
+            </div>
+            <motion.button
+              className="p-2 rounded-full bg-black/30 text-white/70 hover:text-white"
+              whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setCuentaSeleccionada(null)}
+            >
+              ✕
+            </motion.button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm text-white/70 mb-1">Nombre de la Cuenta</h4>
+                <div className="text-xl font-medium">{cuentaSeleccionada.nombre}</div>
+              </div>
+              
+              <div>
+                <h4 className="text-sm text-white/70 mb-1">Tipo de Cuenta</h4>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: getTipoCuentaColor(cuentaSeleccionada.tipo) }}
+                  ></div>
+                  <div>{traducirTipoCuenta(cuentaSeleccionada.tipo)}</div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-sm text-white/70 mb-1">Saldo Actual</h4>
+                <div className={`text-2xl font-medium ${cuentaSeleccionada.saldo >= 0 ? 'text-[#4ade80]' : 'text-[#f87171]'}`}>
+                  {formatCurrency(cuentaSeleccionada.saldo)}
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-sm text-white/70 mb-1">Última Actualización</h4>
+                <div>{formatDateTime(cuentaSeleccionada.ultimaActualizacion)}</div>
+                <div className="text-xs text-white/50 mt-1">{getTimeAgo(cuentaSeleccionada.ultimaActualizacion)}</div>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-medium mb-3">Movimientos Recientes</h4>
+              
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {filtrarTransaccionesPorCuenta(cuentaSeleccionada.id).map(transaction => (
+                  <motion.div
+                    key={transaction.id}
+                    className="p-3 bg-black/30 border border-white/10 rounded-lg flex items-center justify-between"
+                    whileHover={{ scale: 1.01, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          transaction.type === 'ingreso' ? 'bg-[#4ade80]/20 text-[#4ade80]' : 'bg-[#f87171]/20 text-[#f87171]'
+                        }`}
+                      >
+                        {transaction.type === 'ingreso' ? <FaArrowUp /> : <FaArrowDown />}
+                      </div>
+                      <div>
+                        <div className="font-medium">{transaction.description}</div>
+                        <div className="text-xs text-white/70">{transaction.category} · {transaction.date}</div>
+                      </div>
+                    </div>
+                    <div className={`font-medium ${transaction.type === 'ingreso' ? 'text-[#4ade80]' : 'text-[#f87171]'}`}>
+                      {transaction.type === 'ingreso' ? '+' : '-'}${transaction.amount}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              
+              <div className="text-center mt-4">
+                <motion.button
+                  className="px-4 py-2 bg-[#eab308]/20 text-[#eab308] rounded-lg font-medium text-sm hover:bg-[#eab308]/30"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Ver Todos los Movimientos
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+      
+      {/* Formulario para añadir nueva cuenta */}
+      {mostrarFormulario && (
+        <motion.div
+          className="bg-black/20 border border-[#eab308]/30 rounded-lg p-6 mt-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-2">
+              <FaPlus className="text-[#eab308]" />
+              <h3 className="text-lg">Añadir Nueva Cuenta</h3>
+            </div>
+            <motion.button
+              className="p-2 rounded-full bg-black/30 text-white/70 hover:text-white"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setMostrarFormulario(false)}
+            >
+              ✕
+            </motion.button>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="nombre" className="block text-sm text-white/70 mb-2">Nombre de la Cuenta</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#eab308]/50"
+                  value={nuevaCuenta.nombre}
+                  onChange={handleInputChange}
+                  placeholder="Ej. Cuenta Nómina BBVA"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="tipo" className="block text-sm text-white/70 mb-2">Tipo de Cuenta</label>
+                <select
+                  id="tipo"
+                  name="tipo"
+                  className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#eab308]/50"
+                  value={nuevaCuenta.tipo}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="corriente">Cuenta Corriente</option>
+                  <option value="ahorro">Cuenta de Ahorro</option>
+                  <option value="digital">Banco Digital</option>
+                  <option value="ewallet">Billetera Electrónica</option>
+                  <option value="efectivo">Efectivo</option>
+                </select>
+              </div>
+            </div>
+            
+            <div>
+              <label htmlFor="saldo" className="block text-sm text-white/70 mb-2">Saldo Inicial</label>
+              <input
+                type="number"
+                id="saldo"
+                name="saldo"
+                className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-[#eab308]/50"
+                value={nuevaCuenta.saldo}
+                onChange={handleInputChange}
+                step="0.01"
+                placeholder="0.00"
+              />
+            </div>
+            
+            <div className="flex justify-end gap-3">
+              <motion.button
+                type="button"
+                className="px-4 py-2 bg-black/30 text-white/70 rounded-lg"
+                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setMostrarFormulario(false)}
+              >
+                Cancelar
+              </motion.button>
+              
+              <motion.button
+                type="submit"
+                className="px-4 py-2 bg-[#eab308] text-black rounded-lg font-medium"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Guardar Cuenta
+              </motion.button>
+            </div>
+          </form>
+        </motion.div>
+      )}
       
       {/* Movimientos recientes */}
       <motion.div

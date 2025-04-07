@@ -8,10 +8,20 @@ import {
   FaChartPie, FaChartLine, FaChartBar, FaArrowUp, FaArrowDown, 
   FaCalendarAlt, FaWallet, FaCoins, FaExchangeAlt, FaFilter, 
   FaSearch, FaDownload, FaHome, FaQuestion, FaRobot, FaCreditCard, 
-  FaRegLightbulb, FaPaperPlane, FaBalanceScale, FaMoneyBillWave
+  FaRegLightbulb, FaPaperPlane, FaBalanceScale, FaMoneyBillWave,
+  FaPercentage, FaChartArea, FaExclamationTriangle, FaCheckCircle
 } from 'react-icons/fa';
 // Importar tipos correctamente desde la ruta types
 import { Transaccion, CategoriaGasto, DatosAnalisis, PreguntaAnalisis, Deuda, PatrimonioData } from '../../types';
+
+// Interfaz para la distribución de ingresos
+interface DistribucionIngreso {
+  categoria: string;
+  porcentajeIdeal: number;
+  porcentajeReal: number;
+  color: string;
+  descripcion: string;
+}
 
 export default function Analisis() {
   const [activeTab, setActiveTab] = useState('general');
@@ -182,6 +192,52 @@ export default function Analisis() {
     { id: "3", nombre: "Electrónicos", valor: 5000 }
   ];
   const totalActivos = activos.reduce((sum, activo) => sum + activo.valor, 0);
+
+  // Datos simulados para la distribución ideal vs real de ingresos
+  const distribucionIngresos: DistribucionIngreso[] = [
+    {
+      categoria: "Gastos fijos",
+      porcentajeIdeal: 50,
+      porcentajeReal: 65,
+      color: "#f87171",
+      descripcion: "Vivienda, servicios, alimentación, transporte, etc."
+    },
+    {
+      categoria: "Inversiones",
+      porcentajeIdeal: 10,
+      porcentajeReal: 5,
+      color: "#38bdf8",
+      descripcion: "Inversiones en acciones, fondos, etc."
+    },
+    {
+      categoria: "Ahorro",
+      porcentajeIdeal: 10,
+      porcentajeReal: 3,
+      color: "#4ade80",
+      descripcion: "Ahorro para imprevistos y objetivos a corto plazo"
+    },
+    {
+      categoria: "Fondo de emergencia",
+      porcentajeIdeal: 10,
+      porcentajeReal: 7,
+      color: "#a78bfa",
+      descripcion: "Reserva para emergencias (3-6 meses de gastos)"
+    },
+    {
+      categoria: "Deudas",
+      porcentajeIdeal: 10,
+      porcentajeReal: 15,
+      color: "#fb923c",
+      descripcion: "Pago de préstamos, tarjetas de crédito, etc."
+    },
+    {
+      categoria: "Objetivos",
+      porcentajeIdeal: 10,
+      porcentajeReal: 5,
+      color: "#22d3ee",
+      descripcion: "Ahorro para metas específicas"
+    }
+  ];
 
   // Calcular patrimonio neto
   const patrimonioNeto = totalActivos + totalCuentas - totalDeudas;
@@ -673,6 +729,116 @@ export default function Analisis() {
     );
   };
   
+  // Renderizar comparación de distribución ideal vs real de ingresos
+  const renderDistribucionIngresos = () => {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FaChartArea className="text-[#eab308]" />
+            <h3 className="font-medium">Distribución de Ingresos: Ideal vs Real</h3>
+          </div>
+        </div>
+        
+        <div className="p-4 bg-black/20 border border-white/10 rounded-lg">
+          <div className="text-sm text-white/70 mb-4">
+            Compara cómo deberías distribuir tus ingresos mensuales (distribución ideal) con cómo los estás distribuyendo actualmente (distribución real).
+          </div>
+          
+          <div className="space-y-6">
+            {distribucionIngresos.map((item) => {
+              const diferencia = item.porcentajeReal - item.porcentajeIdeal;
+              const estaEquilibrado = Math.abs(diferencia) <= 2; // Consideramos equilibrado si la diferencia es menor o igual a 2%
+              const tieneDeficit = diferencia < -2;
+              const tieneExceso = diferencia > 2;
+              
+              return (
+                <div key={item.categoria} className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: item.color }}
+                      ></div>
+                      <div className="text-sm font-medium">{item.categoria}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {estaEquilibrado && <FaCheckCircle className="text-[#4ade80] text-sm" />}
+                      {tieneDeficit && <FaExclamationTriangle className="text-[#facc15] text-sm" />}
+                      {tieneExceso && <FaExclamationTriangle className="text-[#f87171] text-sm" />}
+                      <div className="text-xs text-white/70">{item.descripcion}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 w-full">
+                    <div className="w-16 text-right text-xs text-white/70">Ideal: {item.porcentajeIdeal}%</div>
+                    <div className="flex-1 h-2 bg-black/30 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full rounded-full"
+                        style={{ 
+                          width: `${item.porcentajeIdeal}%`, 
+                          backgroundColor: item.color,
+                          opacity: 0.6
+                        }}
+                      ></div>
+                    </div>
+                    <div className="w-14 text-xs text-white/70"><FaPercentage className="inline-block" /> {item.porcentajeIdeal}</div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 w-full">
+                    <div className="w-16 text-right text-xs text-white/70">Real: {item.porcentajeReal}%</div>
+                    <div className="flex-1 h-3 bg-black/30 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full rounded-full"
+                        style={{ 
+                          width: `${item.porcentajeReal}%`, 
+                          backgroundColor: item.color
+                        }}
+                      ></div>
+                    </div>
+                    <div className="w-14 text-xs text-white/70"><FaPercentage className="inline-block" /> {item.porcentajeReal}</div>
+                  </div>
+
+                  <div className="pl-16 mt-1">
+                    {tieneDeficit && (
+                      <div className="text-xs text-[#facc15]">
+                        ¡Estás destinando {Math.abs(diferencia)}% menos de lo recomendado!
+                      </div>
+                    )}
+                    {tieneExceso && (
+                      <div className="text-xs text-[#f87171]">
+                        ¡Estás destinando {diferencia}% más de lo recomendado!
+                      </div>
+                    )}
+                    {estaEquilibrado && (
+                      <div className="text-xs text-[#4ade80]">
+                        ¡Excelente balance en esta categoría!
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="mt-6 p-3 bg-black/30 rounded-lg border border-white/10">
+            <div className="flex items-start gap-2">
+              <FaRegLightbulb className="text-[#eab308] mt-0.5 flex-shrink-0" />
+              <div className="text-xs">
+                <p className="mb-1"><strong>50/30/20</strong> es una regla general para distribuir ingresos:</p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>50% para necesidades básicas (vivienda, alimentación, servicios)</li>
+                  <li>30% para objetivos personales (ahorro, inversión, deudas)</li>
+                  <li>20% para deseos (entretenimiento, lujos, etc.)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
   return (
     <div className="container mx-auto px-4 py-8 bg-[#050505] text-[#f4f4f4] min-h-screen">
       {/* Encabezado */}
@@ -800,16 +966,16 @@ export default function Analisis() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <div className="bg-black/20 border border-white/10 rounded-lg p-4">
-          <div className="flex items-center gap-2">
+        <div className="bg-black/20 border border-white/10 rounded-lg p-6">
+          <div className="flex items-center gap-2 mb-2">
             <FaChartBar className="text-[#eab308]" />
             <h3 className="font-medium">Evolución Mensual</h3>
           </div>
           {renderBarChart()}
         </div>
         
-        <div className="bg-black/20 border border-white/10 rounded-lg p-4">
-          <div className="flex items-center gap-2">
+        <div className="bg-black/20 border border-white/10 rounded-lg p-6">
+          <div className="flex items-center gap-2 mb-2">
             <FaChartPie className="text-[#eab308]" />
             <h3 className="font-medium">Distribución</h3>
           </div>
@@ -817,14 +983,24 @@ export default function Analisis() {
         </div>
       </motion.div>
       
-      {/* Sección de deudas */}
+      {/* Resumen de deudas */}
       <motion.div
-        className="bg-black/20 border border-white/10 rounded-lg p-4 mb-8"
+        className="bg-black/20 border border-white/10 rounded-lg p-6 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.7 }}
       >
         {renderResumenDeudas()}
+      </motion.div>
+      
+      {/* Comparación de distribución ideal vs real de ingresos */}
+      <motion.div
+        className="bg-black/20 border border-white/10 rounded-lg p-6 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
+      >
+        {renderDistribucionIngresos()}
       </motion.div>
       
       {/* Botones de navegación */}

@@ -8,10 +8,10 @@ import {
   FaChartPie, FaChartLine, FaChartBar, FaArrowUp, FaArrowDown, 
   FaCalendarAlt, FaWallet, FaCoins, FaExchangeAlt, FaFilter, 
   FaSearch, FaDownload, FaHome, FaQuestion, FaRobot, FaCreditCard, 
-  FaRegLightbulb, FaPaperPlane
+  FaRegLightbulb, FaPaperPlane, FaBalanceScale, FaMoneyBillWave
 } from 'react-icons/fa';
 // Importar tipos correctamente desde la ruta types
-import { Transaccion, CategoriaGasto, DatosAnalisis, PreguntaAnalisis, Deuda } from '../../types';
+import { Transaccion, CategoriaGasto, DatosAnalisis, PreguntaAnalisis, Deuda, PatrimonioData } from '../../types';
 
 export default function Analisis() {
   const [activeTab, setActiveTab] = useState('general');
@@ -166,6 +166,34 @@ export default function Analisis() {
   // Calcular totales de deudas
   const totalDeudas = deudas.reduce((sum, deuda) => sum + deuda.saldoActual, 0);
   const totalCuotasMensuales = deudas.reduce((sum, deuda) => sum + deuda.cuotaMensual, 0);
+  
+  // Datos simulados para cuentas
+  const cuentas = [
+    { id: "1", nombre: "Cuenta Nómina", saldo: 3850.75 },
+    { id: "2", nombre: "Ahorros", saldo: 15200.50 },
+    { id: "3", nombre: "Inversión", saldo: 4250.33 }
+  ];
+  const totalCuentas = cuentas.reduce((sum, cuenta) => sum + cuenta.saldo, 0);
+
+  // Datos simulados para activos
+  const activos = [
+    { id: "1", nombre: "Vehículo", valor: 12000 },
+    { id: "2", nombre: "Propiedad", valor: 180000 },
+    { id: "3", nombre: "Electrónicos", valor: 5000 }
+  ];
+  const totalActivos = activos.reduce((sum, activo) => sum + activo.valor, 0);
+
+  // Calcular patrimonio neto
+  const patrimonioNeto = totalActivos + totalCuentas - totalDeudas;
+
+  // Determinar estado del patrimonio
+  const determinarEstadoPatrimonio = (): PatrimonioData['estado'] => {
+    if (patrimonioNeto < 0) return 'negativo';
+    if (patrimonioNeto < totalGastos * 6) return 'equilibrio'; // menos de 6 meses de gastos
+    return 'positivo';
+  };
+
+  const estadoPatrimonio = determinarEstadoPatrimonio();
   
   // Preguntas predefinidas para análisis
   const preguntasAnalisis = [
@@ -362,80 +390,13 @@ export default function Analisis() {
     );
   };
   
-  // Renderizar lista de transacciones
-  const renderTransactions = () => {
-    return (
-      <div className="mt-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg text-[#eab308]">Movimientos Recientes</h3>
-          <div className="flex items-center gap-2">
-            <motion.button 
-              className="p-2 rounded-lg bg-black/30 hover:bg-black/50"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaFilter className="text-white/70" />
-            </motion.button>
-            <motion.button 
-              className="p-2 rounded-lg bg-black/30 hover:bg-black/50"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaSearch className="text-white/70" />
-            </motion.button>
-            <motion.button 
-              className="p-2 rounded-lg bg-black/30 hover:bg-black/50"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaDownload className="text-white/70" />
-            </motion.button>
-          </div>
-        </div>
-        
-        <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-          {transactions.map(transaction => (
-            <motion.div
-              key={transaction.id}
-              className="p-3 bg-black/20 border border-white/10 rounded-lg flex items-center justify-between hover:border-[#eab308]/30 transition-colors"
-              whileHover={{ scale: 1.01, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${
-                  transaction.type === 'ingreso' ? 'bg-[#4ade80]/20' : 'bg-[#f87171]/20'
-                }`}>
-                  {transaction.type === 'ingreso' ? 
-                    <FaArrowUp className="text-[#4ade80]" /> : 
-                    <FaArrowDown className="text-[#f87171]" />
-                  }
-                </div>
-                <div>
-                  <div className="font-medium">{transaction.description}</div>
-                  <div className="text-xs text-white/70">{transaction.category} • {transaction.date}</div>
-                </div>
-              </div>
-              <div className={`font-medium ${
-                transaction.type === 'ingreso' ? 'text-[#4ade80]' : 'text-[#f87171]'
-              }`}>
-                {transaction.type === 'ingreso' ? '+' : '-'}${transaction.amount}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-  
   // Renderizar sección de análisis inteligente
   const renderAnalisisInteligente = () => {
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-4">
-          <FaRobot className="text-[#eab308]" />
-          <h3 className="font-medium">Análisis Inteligente</h3>
+          <FaRobot className="text-[#eab308] text-xl" />
+          <h3 className="font-medium text-lg">Análisis Inteligente</h3>
         </div>
         
         {/* Área de preguntas y respuestas */}
@@ -463,7 +424,7 @@ export default function Analisis() {
           {/* Área de respuesta y formulario de pregunta */}
           <div className="md:col-span-2 space-y-4">
             {/* Respuesta actual */}
-            <div className="bg-black/20 border border-white/10 rounded-lg p-4 min-h-[200px] max-h-[400px] overflow-y-auto custom-scrollbar">
+            <div className="bg-black/20 border border-white/10 rounded-lg p-4 min-h-[300px] max-h-[500px] overflow-y-auto custom-scrollbar">
               {isAnswering ? (
                 <div className="flex items-center justify-center h-full">
                   <motion.div 
@@ -518,6 +479,105 @@ export default function Analisis() {
                 <FaPaperPlane />
               </motion.button>
             </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
+  // Renderizar indicador de patrimonio neto
+  const renderPatrimonioNeto = () => {
+    const getColorForEstado = () => {
+      switch (estadoPatrimonio) {
+        case 'positivo': return 'text-[#4ade80]';
+        case 'equilibrio': return 'text-[#facc15]';
+        case 'negativo': return 'text-[#f87171]';
+        default: return 'text-white';
+      }
+    };
+
+    const getDescripcionEstado = () => {
+      switch (estadoPatrimonio) {
+        case 'positivo': return 'Base sólida financiera. Continúa construyendo y diversificando tus activos e inversiones.';
+        case 'equilibrio': return 'Situación estable pero vulnerable. Enfócate en reducir deudas y aumentar tus activos.';
+        case 'negativo': return 'Patrimonio en riesgo. Prioriza reducir deudas y construir un fondo de emergencia.';
+        default: return '';
+      }
+    };
+    
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FaBalanceScale className="text-[#eab308]" />
+            <h3 className="font-medium">Patrimonio Neto</h3>
+          </div>
+        </div>
+        
+        {/* Resumen principal */}
+        <div className="p-4 bg-black/20 border border-white/10 rounded-lg mb-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <div className="text-sm text-white/70 mb-1">Tu patrimonio neto total</div>
+              <div className={`text-3xl font-light ${getColorForEstado()}`}>
+                ${patrimonioNeto.toLocaleString()}
+              </div>
+              <div className="flex items-center mt-2 gap-2">
+                <div className={`px-3 py-1 rounded-full text-xs ${
+                  estadoPatrimonio === 'positivo' ? 'bg-[#4ade80]/20 text-[#4ade80]' :
+                  estadoPatrimonio === 'equilibrio' ? 'bg-[#facc15]/20 text-[#facc15]' :
+                  'bg-[#f87171]/20 text-[#f87171]'
+                }`}>
+                  {estadoPatrimonio === 'positivo' ? 'Crecimiento' :
+                   estadoPatrimonio === 'equilibrio' ? 'Equilibrio' : 'Riesgo'}
+                </div>
+                <span className="text-xs text-white/60">{getDescripcionEstado()}</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4 w-full md:w-auto">
+              <div className="text-center">
+                <div className="bg-[#4ade80]/10 rounded-lg p-3">
+                  <FaMoneyBillWave className="text-[#4ade80] mx-auto mb-1" />
+                  <div className="text-xs text-white/60">Activos</div>
+                  <div className="text-sm text-[#4ade80]">${totalActivos.toLocaleString()}</div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="bg-[#818cf8]/10 rounded-lg p-3">
+                  <FaWallet className="text-[#818cf8] mx-auto mb-1" />
+                  <div className="text-xs text-white/60">Cuentas</div>
+                  <div className="text-sm text-[#818cf8]">${totalCuentas.toLocaleString()}</div>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="bg-[#f87171]/10 rounded-lg p-3">
+                  <FaCreditCard className="text-[#f87171] mx-auto mb-1" />
+                  <div className="text-xs text-white/60">Deudas</div>
+                  <div className="text-sm text-[#f87171]">${totalDeudas.toLocaleString()}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Barra de progreso */}
+        <div className="p-4 bg-black/20 border border-white/10 rounded-lg">
+          <div className="text-sm text-white/70 mb-2">Evolución del patrimonio</div>
+          <div className="h-4 bg-black/30 rounded-full overflow-hidden mb-1">
+            <div 
+              className={`h-full ${
+                estadoPatrimonio === 'positivo' ? 'bg-[#4ade80]' :
+                estadoPatrimonio === 'equilibrio' ? 'bg-[#facc15]' : 'bg-[#f87171]'
+              }`} 
+              style={{ width: `${Math.max(0, Math.min(100, (patrimonioNeto / (totalActivos + totalCuentas)) * 100))}%` }}
+            ></div>
+          </div>
+          <div className="flex justify-between text-xs text-white/60">
+            <div>Deudas totales</div>
+            <div>Fortuna total</div>
           </div>
         </div>
       </div>
@@ -712,12 +772,32 @@ export default function Analisis() {
         </motion.div>
       </motion.div>
       
+      {/* Sección de análisis inteligente - Ahora más prominente */}
+      <motion.div
+        className="bg-black/20 border border-[#eab308]/30 rounded-lg p-6 mb-8 shadow-[0_0_15px_rgba(234,179,8,0.1)]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        {renderAnalisisInteligente()}
+      </motion.div>
+      
+      {/* Patrimonio Neto */}
+      <motion.div
+        className="bg-black/20 border border-white/10 rounded-lg p-6 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        {renderPatrimonioNeto()}
+      </motion.div>
+      
       {/* Gráficos y análisis */}
       <motion.div 
         className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
       >
         <div className="bg-black/20 border border-white/10 rounded-lg p-4">
           <div className="flex items-center gap-2">
@@ -744,26 +824,6 @@ export default function Analisis() {
         transition={{ duration: 0.5, delay: 0.7 }}
       >
         {renderResumenDeudas()}
-      </motion.div>
-      
-      {/* Sección de análisis inteligente */}
-      <motion.div
-        className="bg-black/20 border border-white/10 rounded-lg p-4 mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
-      >
-        {renderAnalisisInteligente()}
-      </motion.div>
-      
-      {/* Transacciones */}
-      <motion.div 
-        className="bg-black/20 border border-white/10 rounded-lg p-4 mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-      >
-        {renderTransactions()}
       </motion.div>
       
       {/* Botones de navegación */}

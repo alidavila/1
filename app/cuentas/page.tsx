@@ -5,15 +5,84 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { 
   FaHome, FaWallet, FaSync, FaSyncAlt, FaChartPie, 
-  FaInfoCircle, FaRegClock, FaPlus, FaRegEye 
+  FaInfoCircle, FaRegClock, FaPlus, FaRegEye,
+  FaFilter, FaSearch, FaDownload, FaArrowUp, FaArrowDown
 } from 'react-icons/fa';
-import { Cuenta, TipoCuenta } from '../../types';
+import { Cuenta, TipoCuenta, Transaccion } from '../../types';
 
 export default function Cuentas() {
   const [cuentas, setCuentas] = useState<Cuenta[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [mostrarGrafico, setMostrarGrafico] = useState(true);
   
+  // Datos simulados para las transacciones
+  const transactions: Transaccion[] = [
+    { 
+      id: 1, 
+      description: 'Salario Mensual', 
+      amount: 4000, 
+      type: 'ingreso', 
+      category: 'Salario', 
+      date: '05/06/2025'
+    },
+    { 
+      id: 2, 
+      description: 'Alquiler', 
+      amount: 1200, 
+      type: 'gasto', 
+      category: 'Vivienda', 
+      date: '07/06/2025'
+    },
+    { 
+      id: 3, 
+      description: 'Supermercado', 
+      amount: 200, 
+      type: 'gasto', 
+      category: 'Alimentación', 
+      date: '10/06/2025'
+    },
+    { 
+      id: 4, 
+      description: 'Proyecto Freelance', 
+      amount: 800, 
+      type: 'ingreso', 
+      category: 'Freelance', 
+      date: '15/06/2025'
+    },
+    { 
+      id: 5, 
+      description: 'Restaurante', 
+      amount: 120, 
+      type: 'gasto', 
+      category: 'Alimentación', 
+      date: '18/06/2025'
+    },
+    { 
+      id: 6, 
+      description: 'Gasolina', 
+      amount: 150, 
+      type: 'gasto', 
+      category: 'Transporte', 
+      date: '20/06/2025'
+    },
+    { 
+      id: 7, 
+      description: 'Dividendos', 
+      amount: 400, 
+      type: 'ingreso', 
+      category: 'Inversiones', 
+      date: '22/06/2025'
+    },
+    { 
+      id: 8, 
+      description: 'Netflix', 
+      amount: 15, 
+      type: 'gasto', 
+      category: 'Entretenimiento', 
+      date: '25/06/2025'
+    }
+  ];
+
   useEffect(() => {
     // En un entorno real, aquí cargaríamos los datos desde la API de n8n
     // Para el ejemplo, usamos datos de prueba estáticos
@@ -193,6 +262,67 @@ export default function Cuentas() {
               </motion.div>
             );
           })}
+        </div>
+      </div>
+    );
+  };
+  
+  // Renderizar lista de transacciones
+  const renderTransactions = () => {
+    return (
+      <div className="mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg text-[#eab308]">Movimientos Recientes</h3>
+          <div className="flex items-center gap-2">
+            <motion.button 
+              className="p-2 rounded-lg bg-black/30 hover:bg-black/50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaFilter className="text-white/70" />
+            </motion.button>
+            <motion.button 
+              className="p-2 rounded-lg bg-black/30 hover:bg-black/50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaSearch className="text-white/70" />
+            </motion.button>
+            <motion.button 
+              className="p-2 rounded-lg bg-black/30 hover:bg-black/50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaDownload className="text-white/70" />
+            </motion.button>
+          </div>
+        </div>
+        
+        <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+          {transactions.map(transaction => (
+            <motion.div
+              key={transaction.id}
+              className="p-3 bg-black/20 border border-white/10 rounded-lg flex items-center justify-between hover:border-[#eab308]/30 transition-colors"
+              whileHover={{ scale: 1.01, backgroundColor: 'rgba(255, 255, 255, 0.03)' }}
+            >
+              <div className="flex items-center gap-3">
+                <div 
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    transaction.type === 'ingreso' ? 'bg-[#4ade80]/20 text-[#4ade80]' : 'bg-[#f87171]/20 text-[#f87171]'
+                  }`}
+                >
+                  {transaction.type === 'ingreso' ? <FaArrowUp /> : <FaArrowDown />}
+                </div>
+                <div>
+                  <div className="font-medium">{transaction.description}</div>
+                  <div className="text-xs text-white/70">{transaction.category} · {transaction.date}</div>
+                </div>
+              </div>
+              <div className={`font-medium ${transaction.type === 'ingreso' ? 'text-[#4ade80]' : 'text-[#f87171]'}`}>
+                {transaction.type === 'ingreso' ? '+' : '-'}${transaction.amount}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     );
@@ -402,6 +532,16 @@ export default function Cuentas() {
             </table>
           </div>
         )}
+      </motion.div>
+      
+      {/* Movimientos recientes */}
+      <motion.div
+        className="bg-black/20 border border-white/10 rounded-lg p-6 mt-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        {renderTransactions()}
       </motion.div>
       
       {/* Botones de navegación */}

@@ -11,6 +11,7 @@ import {
 // Importar componentes
 import { MapaDeudas, generarMapaDeuda } from './components/MapaDeuda';
 import { Simulador } from './components/Simulador';
+import { TablaAmortizacion } from './components/TablaAmortizacion';
 
 export default function Deudas() {
   const [sortBy, setSortBy] = useState('acreedor');
@@ -19,6 +20,8 @@ export default function Deudas() {
   const [simuladorOpen, setSimuladorOpen] = useState(false);
   const [simuladorDeuda, setSimuladorDeuda] = useState<any | null>(null);
   const [simuladorModo, setSimuladorModo] = useState<'mas' | 'menos'>('mas');
+  const [tablaAmortizacionOpen, setTablaAmortizacionOpen] = useState(false);
+  const [tablaAmortizacionDeuda, setTablaAmortizacionDeuda] = useState<any | null>(null);
   
   // Datos de ejemplo para las deudas
   const deudas = [
@@ -118,6 +121,12 @@ export default function Deudas() {
     setSimuladorDeuda(deuda);
     setSimuladorModo(modo);
     setSimuladorOpen(true);
+  };
+  
+  // Abrir tabla de amortización
+  const openTablaAmortizacion = (deuda: any) => {
+    setTablaAmortizacionDeuda(deuda);
+    setTablaAmortizacionOpen(true);
   };
   
   // Renderizar indicadores clave
@@ -296,7 +305,7 @@ export default function Deudas() {
                                 className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-left hover:border-[#eab308]/30"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // Implementar vista de tabla de amortización
+                                  openTablaAmortizacion(deuda);
                                 }}
                               >
                                 Ver tabla de amortización
@@ -371,22 +380,6 @@ export default function Deudas() {
       {/* Indicadores Clave */}
       {renderKPI()}
       
-      {/* Título para el mapa de deudas */}
-      <motion.div
-        className="mb-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        <h3 className="text-xl text-[#eab308] flex items-center gap-2">
-          <FaChartLine className="text-lg" />
-          Ruta de Distribución de Deudas
-          <span className="text-sm font-normal text-white/60 ml-2">
-            Explora tu deuda paso a paso desde lo general hasta el detalle
-          </span>
-        </h3>
-      </motion.div>
-      
       {/* Mapa Jerárquico de Deudas */}
       <MapaDeudas data={mapaDeudaData} />
       
@@ -408,6 +401,16 @@ export default function Deudas() {
             deuda={simuladorDeuda} 
             modo={simuladorModo}
             onClose={() => setSimuladorOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+      
+      {/* Modal de tabla de amortización */}
+      <AnimatePresence>
+        {tablaAmortizacionOpen && tablaAmortizacionDeuda && (
+          <TablaAmortizacion 
+            deuda={tablaAmortizacionDeuda}
+            onClose={() => setTablaAmortizacionOpen(false)}
           />
         )}
       </AnimatePresence>

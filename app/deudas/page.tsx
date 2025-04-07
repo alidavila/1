@@ -371,6 +371,22 @@ export default function Deudas() {
       {/* Indicadores Clave */}
       {renderKPI()}
       
+      {/* Título para el mapa de deudas */}
+      <motion.div
+        className="mb-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <h3 className="text-xl text-[#eab308] flex items-center gap-2">
+          <FaChartLine className="text-lg" />
+          Ruta de Distribución de Deudas
+          <span className="text-sm font-normal text-white/60 ml-2">
+            Explora tu deuda paso a paso desde lo general hasta el detalle
+          </span>
+        </h3>
+      </motion.div>
+      
       {/* Mapa Jerárquico de Deudas */}
       <MapaDeudas data={mapaDeudaData} />
       

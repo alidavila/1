@@ -8,7 +8,7 @@ import {
   FaInfoCircle, FaRegClock, FaPlus, FaRegEye,
   FaFilter, FaSearch, FaDownload, FaArrowUp, FaArrowDown
 } from 'react-icons/fa';
-import { Cuenta, TipoCuenta, Transaccion } from '../../types';
+import { Cuenta, TipoCuenta, Transaccion } from '@/types';
 
 export default function Cuentas() {
   const [cuentas, setCuentas] = useState<Cuenta[]>([]);

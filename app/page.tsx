@@ -21,6 +21,11 @@ interface MainSection {
     left: string;
     rotate: number;
   };
+  mobilePosition?: {
+    top: string;
+    left: string;
+    rotate: number;
+  };
 }
 
 // Definir interfaces para los datos del dashboard
@@ -52,11 +57,14 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
   
   return (
     <motion.div
-      className="absolute z-10 hidden md:block" // Ocultar en móviles, mostrar en tablets y superior
+      className="absolute z-10"
       style={{
-        top: section.position.top,
-        left: section.position.left,
-        transform: `rotate(${section.position.rotate}deg)`,
+        // Usar posición para móviles si existe, de lo contrario usar posición normal
+        top: section.mobilePosition?.top || section.position.top,
+        left: section.mobilePosition?.left || section.position.left,
+        transform: `rotate(${section.mobilePosition?.rotate || section.position.rotate}deg)`,
+        // Ajuste responsivo para el tamaño
+        fontSize: 'clamp(0.7rem, 2vw, 1rem)'
       }}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ 
@@ -86,7 +94,7 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
       <Link href={section.path}>
         <div className="flex flex-col items-center group">
           <motion.div
-            className="text-[#eab308] text-3xl mb-2 group-hover:text-yellow-300"
+            className="text-[#eab308] text-2xl sm:text-3xl mb-1 sm:mb-2 group-hover:text-yellow-300"
             whileHover={{ 
               scale: 1.2,
               textShadow: "0 0 15px rgba(234,179,8,0.8)"
@@ -95,7 +103,7 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
             {section.icon}
           </motion.div>
           <motion.h3 
-            className="text-lg font-light text-yellow-500/90 group-hover:text-yellow-300"
+            className="text-sm sm:text-lg font-light text-yellow-500/90 group-hover:text-yellow-300"
             whileHover={{ 
               textShadow: "0 0 8px rgba(234,179,8,0.7)"
             }}
@@ -110,34 +118,6 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
 // Asignar displayName para resolver el error de ESLint
 SectionIcon.displayName = 'SectionIcon';
 
-// Versión móvil para mostrar las opciones en forma de grid
-const MobileSectionGrid = memo(({ sections, onHover }: { 
-  sections: MainSection[], 
-  onHover: (title: string | null) => void
-}) => (
-  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full md:hidden mt-4">
-    {sections.map((section) => (
-      <Link key={section.title} href={section.path}>
-        <motion.div 
-          className="flex flex-col items-center p-3 bg-black/20 rounded-lg border border-yellow-600/20 hover:border-yellow-600/40 transition-colors"
-          onMouseEnter={() => onHover(section.title)}
-          onMouseLeave={() => onHover(null)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <div className="text-[#eab308] text-2xl mb-2">
-            {section.icon}
-          </div>
-          <h3 className="text-sm font-light text-yellow-500/90">
-            {section.title}
-          </h3>
-        </motion.div>
-      </Link>
-    ))}
-  </div>
-));
-MobileSectionGrid.displayName = 'MobileSectionGrid';
-
 // Componente de respuesta
 const ResponseBox = memo(({ activeSection, response, mainSections }: {
   activeSection: string | null,
@@ -145,7 +125,7 @@ const ResponseBox = memo(({ activeSection, response, mainSections }: {
   mainSections: MainSection[]
 }) => (
   <motion.div 
-    className="w-full max-w-2xl min-h-[100px] rounded-xl bg-black/40 border border-yellow-600/30 p-6 mb-8 relative z-10 md:-mt-40 mt-4" // Ajustado para móviles
+    className="w-full max-w-2xl min-h-[100px] rounded-xl bg-black/40 border border-yellow-600/30 p-4 sm:p-6 mb-8 relative z-10 sm:-mt-20" 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -157,7 +137,7 @@ const ResponseBox = memo(({ activeSection, response, mainSections }: {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.3 }}
-        className="text-yellow-100/80"
+        className="text-yellow-100/80 text-sm sm:text-base"
       >
         {activeSection ? (
           <div>
@@ -176,8 +156,8 @@ ResponseBox.displayName = 'ResponseBox';
 
 // Componente para el monje central
 const MonkImage = memo(() => (
-  <div className="absolute inset-0 flex items-start justify-center md:block hidden"> {/* Ocultar en móviles */}
-    <div className="relative h-[80%] aspect-square flex justify-center items-center z-10">
+  <div className="absolute inset-0 flex items-center justify-center">
+    <div className="relative h-[65%] sm:h-[75%] md:h-[80%] aspect-square flex justify-center items-center z-10">
       {/* Aura dorada sutil detrás del monje */}
       <div className="absolute inset-0 rounded-full bg-yellow-600/5 animate-pulse filter blur-md" 
            style={{transform: 'scale(0.95)'}}></div>
@@ -219,41 +199,6 @@ const MonkImage = memo(() => (
 // Asignar displayName para resolver el error de ESLint
 MonkImage.displayName = 'MonkImage';
 
-// Versión móvil del monje, más pequeña y centrada
-const MobileMonkImage = memo(() => (
-  <div className="md:hidden flex justify-center items-center py-4">
-    <div className="relative w-32 h-32">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: 1, 
-          scale: 1,
-          y: [0, -8, 0]  // Menor flotación para móviles
-        }}
-        transition={{ 
-          duration: 0.7,
-          y: {
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }
-        }}
-        className="relative h-full w-full"
-      >
-        <Image
-          src="/images/monje6.png"
-          alt="Monje Zen"
-          fill
-          style={{ objectFit: 'contain' }}
-          className="drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-          priority
-        />
-      </motion.div>
-    </div>
-  </div>
-));
-MobileMonkImage.displayName = 'MobileMonkImage';
-
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -276,6 +221,11 @@ export default function Home() {
         top: '15%',
         left: '15%',
         rotate: -25
+      },
+      mobilePosition: {
+        top: '20%',
+        left: '10%',
+        rotate: -15
       }
     },
     {
@@ -287,6 +237,11 @@ export default function Home() {
         top: '30%',
         left: '8%',
         rotate: -15
+      },
+      mobilePosition: {
+        top: '35%',
+        left: '5%',
+        rotate: -10
       }
     },
     {
@@ -298,6 +253,11 @@ export default function Home() {
         top: '55%',
         left: '8%',
         rotate: 15
+      },
+      mobilePosition: {
+        top: '65%',
+        left: '5%',
+        rotate: 10
       }
     },
     {
@@ -309,6 +269,11 @@ export default function Home() {
         top: '70%',
         left: '15%',
         rotate: 25
+      },
+      mobilePosition: {
+        top: '80%',
+        left: '10%',
+        rotate: 15
       }
     },
     {
@@ -320,6 +285,11 @@ export default function Home() {
         top: '15%',
         left: '80%',
         rotate: 25
+      },
+      mobilePosition: {
+        top: '20%',
+        left: '85%',
+        rotate: 15
       }
     },
     {
@@ -331,6 +301,11 @@ export default function Home() {
         top: '30%',
         left: '85%',
         rotate: 15
+      },
+      mobilePosition: {
+        top: '35%',
+        left: '90%',
+        rotate: 10
       }
     },
     {
@@ -342,6 +317,11 @@ export default function Home() {
         top: '55%',
         left: '85%',
         rotate: -15
+      },
+      mobilePosition: {
+        top: '65%',
+        left: '90%',
+        rotate: -10
       }
     },
     {
@@ -353,6 +333,11 @@ export default function Home() {
         top: '70%',
         left: '80%',
         rotate: -25
+      },
+      mobilePosition: {
+        top: '80%',
+        left: '85%',
+        rotate: -15
       }
     }
   ];
@@ -443,14 +428,8 @@ export default function Home() {
           </form>
         </div>
         
-        {/* Monje móvil (solo visible en pantallas pequeñas) */}
-        <MobileMonkImage />
-        
-        {/* Grid de navegación para móviles */}
-        <MobileSectionGrid sections={mainSections} onHover={handleHover} />
-        
-        {/* Contenedor central con el monje y las secciones (visible solo en pantallas medianas y grandes) */}
-        <div className="relative w-full max-w-4xl aspect-square mt-0 -mt-4 hidden md:block">
+        {/* Contenedor central con el monje y las secciones */}
+        <div className="relative w-full max-w-4xl aspect-square mt-0 -mt-4">
           {/* Imagen del monje centrada */}
           <MonkImage />
           
@@ -505,7 +484,7 @@ export default function Home() {
 // Componente separado para el dashboard
 const Dashboard = memo(({ dashboardData }: { dashboardData: DashboardData }) => (
   <motion.div 
-    className="w-full max-w-4xl rounded-xl bg-black/40 border border-yellow-600/30 p-6 mb-2 relative z-10"
+    className="w-full max-w-4xl rounded-xl bg-black/40 border border-yellow-600/30 p-4 sm:p-6 mb-2 relative z-10"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -538,19 +517,19 @@ const Dashboard = memo(({ dashboardData }: { dashboardData: DashboardData }) => 
         <div className="mt-3 flex justify-between text-xs text-white/60">
           <span>Enero</span>
           <span>Julio</span>
-            </div>
+        </div>
         
         <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-2 gap-2">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-green-400"></div>
             <span className="text-xs text-green-400">+${dashboardData.ingresos.toLocaleString()}</span>
-            </div>
+          </div>
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-red-400"></div>
             <span className="text-xs text-red-400">-${dashboardData.gastos.toLocaleString()}</span>
-            </div>
-            </div>
-            </div>
+          </div>
+        </div>
+      </div>
       
       {/* Gráfico de activos vs pasivos */}
       <div className="col-span-1 bg-black/60 rounded-lg p-4 border border-yellow-500/20">

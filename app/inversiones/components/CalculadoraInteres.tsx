@@ -1,11 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaCoins, FaChartLine, FaCalendarAlt, FaPercent, FaInfoCircle } from 'react-icons/fa';
 
 interface CalculadoraInteresProps {
   formatCurrency: (amount: number) => string;
+}
+
+// Tipo para los resultados
+interface ResultadosInteres {
+  montoFinal: number;
+  montoAportado: number;
+  interesesGenerados: number;
+  datosGrafico: Array<{ anio: number; mes: number; aportado: number; total: number }>;
 }
 
 export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCurrency }) => {
@@ -14,12 +22,7 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
   const [tasaAnual, setTasaAnual] = useState<number>(8);
   const [plazoAnios, setPlazoAnios] = useState<number>(5);
   const [frecuenciaCapitalizacion, setFrecuenciaCapitalizacion] = useState<number>(12); // Mensual por defecto
-  const [resultados, setResultados] = useState<{
-    montoFinal: number;
-    montoAportado: number;
-    interesesGenerados: number;
-    datosGrafico: Array<{ anio: number; mes: number; aportado: number; total: number }>;
-  } | null>(null);
+  const [resultados, setResultados] = useState<ResultadosInteres | null>(null);
   
   // Función para validar entradas numéricas
   const validarNumero = (valor: string, max: number = Infinity): number => {
@@ -27,13 +30,12 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
     if (isNaN(numero) || numero < 0) return 0;
     return Math.min(numero, max);
   };
-  
-  // Calcular interés compuesto - definido con useCallback antes de ser usado en useEffect
-  const calcularInteres = useCallback(() => {
+
+  // Función que calcula el interés compuesto
+  function calcularResultados(): ResultadosInteres | null {
     // Validar entradas
     if (tasaAnual <= 0 || plazoAnios <= 0) {
-      setResultados(null);
-      return;
+      return null;
     }
     
     const meses = plazoAnios * 12;
@@ -67,18 +69,18 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
       }
     }
     
-    setResultados({
+    return {
       montoFinal: total,
       montoAportado: totalAportado,
       interesesGenerados: total - totalAportado,
       datosGrafico
-    });
-  }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion]);
+    };
+  }
   
-  // Calcular el interés compuesto cada vez que cambien los parámetros
+  // Efecto para actualizar resultados cuando cambian los parámetros
   useEffect(() => {
-    calcularInteres();
-  }, [calcularInteres]);
+    setResultados(calcularResultados());
+  }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion]);
   
   // Renderizar gráfico de barras
   const renderGrafico = () => {

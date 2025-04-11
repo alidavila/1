@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FaCoins, FaRegCalendarAlt, FaCheck, FaTimes, FaStar,
@@ -19,8 +19,8 @@ export const CrearObjetivo: React.FC<CrearObjetivoProps> = ({
   onGuardar,
   onCancelar
 }) => {
-  // Estado inicial del formulario
-  const estadoInicial: Objetivo = {
+  // Estado inicial del formulario envuelto en useMemo para evitar recreación en cada render
+  const estadoInicial = useMemo(() => ({
     id: '',
     nombre: '',
     categoria: 'ahorro_emergencia',
@@ -31,7 +31,7 @@ export const CrearObjetivo: React.FC<CrearObjetivoProps> = ({
     prioridad: 1,
     fechaCreacion: '',
     completado: false
-  };
+  }), []);
   
   const [formValues, setFormValues] = useState<Objetivo>(estadoInicial);
   const [fechaAutoCalculada, setFechaAutoCalculada] = useState(true);

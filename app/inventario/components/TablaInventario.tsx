@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { FaEdit, FaTrash, FaEye, FaImage, FaEllipsisV } from 'react-icons/fa';
 import type { ItemInventario } from '../page';
 
@@ -147,9 +148,11 @@ export default function TablaInventario({ items, onEdit, onDelete }: TablaInvent
                       <div className="flex items-center gap-3">
                         <div className="relative h-10 w-10 rounded-md overflow-hidden flex items-center justify-center bg-black/30 border border-white/10">
                           {item.imagenes && item.imagenes.length > 0 ? (
-                            <img 
+                            <Image 
                               src={item.imagenes[0]} 
                               alt={item.nombre} 
+                              width={40}
+                              height={40}
                               className="h-full w-full object-cover"
                             />
                           ) : (
@@ -242,11 +245,14 @@ export default function TablaInventario({ items, onEdit, onDelete }: TablaInvent
                                   {item.imagenes.map((img, idx) => (
                                     <div 
                                       key={idx}
-                                      className="h-20 rounded-md overflow-hidden border border-white/10"
+                                      className="relative h-20 rounded-md overflow-hidden border border-white/10"
                                     >
-                                      <img 
+                                      <Image 
                                         src={img} 
-                                        alt={`${item.nombre} - ${idx}`} 
+                                        alt={`${item.nombre} - ${idx}`}
+                                        fill
+                                        sizes="(max-width: 768px) 33vw, 20vw"
+                                        style={{ objectFit: 'cover' }}
                                         className="h-full w-full object-cover"
                                       />
                                     </div>

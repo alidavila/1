@@ -1,15 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     domains: ['localhost'],
   },
   experimental: {
     optimizeCss: true,
     turbo: {
-      loaders: {
-        '.js': ['babel-loader'],
+      rules: {
+        '*.js': [
+          {
+            loader: 'babel-loader',
+          },
+        ],
       },
     },
   },

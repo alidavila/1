@@ -109,6 +109,8 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
     </motion.div>
   );
 });
+// Asignar displayName para resolver el error de ESLint
+SectionIcon.displayName = 'SectionIcon';
 
 // Componente de respuesta
 const ResponseBox = memo(({ activeSection, response, mainSections }: {
@@ -143,6 +145,8 @@ const ResponseBox = memo(({ activeSection, response, mainSections }: {
     </AnimatePresence>
   </motion.div>
 ));
+// Asignar displayName para resolver el error de ESLint
+ResponseBox.displayName = 'ResponseBox';
 
 // Componente para el monje central
 const MonkImage = memo(() => (
@@ -186,6 +190,8 @@ const MonkImage = memo(() => (
     </div>
   </div>
 ));
+// Asignar displayName para resolver el error de ESLint
+MonkImage.displayName = 'MonkImage';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -351,6 +357,8 @@ export default function Home() {
       )}
     </button>
   ));
+  // Asignar displayName para resolver el error de ESLint
+  SubmitButton.displayName = 'SubmitButton';
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
@@ -591,3 +599,5 @@ const Dashboard = memo(({ dashboardData }: { dashboardData: DashboardData }) => 
     </div>
   </motion.div>
 ));
+// Asignar displayName para resolver el error de ESLint
+Dashboard.displayName = 'Dashboard';

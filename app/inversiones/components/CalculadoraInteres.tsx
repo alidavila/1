@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { FaCoins, FaChartLine, FaCalendarAlt, FaPercent, FaInfoCircle } from 'react-icons/fa';
 
@@ -24,7 +24,7 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
   // Calcular el interés compuesto cada vez que cambien los parámetros
   useEffect(() => {
     calcularInteres();
-  }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion]);
+  }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion, calcularInteres]);
   
   // Función para validar entradas numéricas
   const validarNumero = (valor: string, max: number = Infinity): number => {
@@ -33,8 +33,8 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
     return Math.min(numero, max);
   };
   
-  // Calcular interés compuesto
-  const calcularInteres = () => {
+  // Calcular interés compuesto - convertir a useCallback para evitar recreación en cada render
+  const calcularInteres = useCallback(() => {
     // Validar entradas
     if (tasaAnual <= 0 || plazoAnios <= 0) {
       setResultados(null);
@@ -42,9 +42,7 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
     }
     
     const meses = plazoAnios * 12;
-    const tasaMensual = tasaAnual / 100 / 12;
-    const periodosCapitalizacion = frecuenciaCapitalizacion; // Periodos por año
-    const tasaPorPeriodo = tasaAnual / 100 / periodosCapitalizacion;
+    const tasaPorPeriodo = tasaAnual / 100 / frecuenciaCapitalizacion;
     
     let total = montoInicial;
     let totalAportado = montoInicial;
@@ -59,7 +57,7 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
       totalAportado += aporteMensual;
       
       // Calcular interés según la frecuencia de capitalización
-      if (mes % (12 / periodosCapitalizacion) === 0) {
+      if (mes % (12 / frecuenciaCapitalizacion) === 0) {
         total *= (1 + tasaPorPeriodo);
       }
       
@@ -80,7 +78,7 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
       interesesGenerados: total - totalAportado,
       datosGrafico
     });
-  };
+  }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion]);
   
   // Renderizar gráfico de barras
   const renderGrafico = () => {

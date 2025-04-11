@@ -7,7 +7,7 @@ const path = require('path');
 // Determinar si estamos en desarrollo o producción
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
-const port = 4000; // Puerto fijo en 4000
+const port = process.env.PORT || 4000; // Usar variable de entorno PORT para Vercel
 
 // Manejar solicitudes concurrentes y problemas de permisos de archivos
 const MAX_RETRIES = 3;
@@ -15,6 +15,17 @@ const retryDelay = 500; // ms
 
 // Función de utilidad para esperar
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Detectar si estamos en Vercel
+const isVercel = process.env.VERCEL === '1';
+
+// Si estamos en Vercel, no necesitamos ejecutar el servidor personalizado
+if (isVercel) {
+  console.log('> Ejecutando en Vercel, omitiendo servidor personalizado');
+  // Exportamos un objeto vacío para evitar errores
+  module.exports = {};
+  return;
+}
 
 // Inicializar Next.js con opciones optimizadas
 const app = next({ 

@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DANTE Finance
 
-## Getting Started
+DANTE Finance es una aplicación de gestión financiera personal que permite a los usuarios controlar sus finanzas, administrar presupuestos, hacer seguimiento a sus inversiones y visualizar su situación financiera mediante análisis detallados.
 
-First, run the development server:
+## Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Dashboard Principal**: Vista general de la situación financiera
+- **Presupuestos**: Creación y seguimiento de presupuestos por categorías
+- **Cuentas**: Administración de cuentas bancarias y seguimiento de saldos
+- **Deudas**: Gestión y planificación para eliminar deudas
+- **Inversiones**: Seguimiento del rendimiento de inversiones
+- **Calendario**: Planificación de eventos financieros
+- **Análisis**: Visualización de datos y análisis financiero detallado
+
+## Tecnologías Utilizadas
+
+- **Next.js**: Framework de React para renderizado del lado del servidor
+- **React**: Biblioteca para interfaces de usuario
+- **TypeScript**: Tipado estático para JavaScript
+- **Tailwind CSS**: Framework CSS para diseño responsive
+- **Framer Motion**: Biblioteca para animaciones fluidas
+- **React Icons**: Conjunto de iconos populares
+
+## Requisitos Previos
+
+- Node.js (v18 o superior)
+- npm (v9 o superior)
+
+## Instalación y Ejecución Local
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/alidavila/1.git
+   cd 1
+   ```
+
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+3. Ejecuta el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+
+4. Abre [http://localhost:4000](http://localhost:4000) en tu navegador.
+
+## Despliegue en Vercel
+
+Este proyecto está optimizado para ser desplegado en Vercel. Para desplegar:
+
+1. Crea una cuenta en [Vercel](https://vercel.com)
+2. Conecta tu repositorio de GitHub
+3. Selecciona el repositorio y haz clic en "Import"
+4. Las configuraciones ya están definidas en el archivo `vercel.json`
+5. Haz clic en "Deploy"
+
+## Estructura del Proyecto
+
+```
+/app          - Páginas y componentes de la aplicación
+/components   - Componentes reutilizables
+/types        - Definiciones de tipos TypeScript
+/lib          - Utilidades y funciones auxiliares
+/public       - Archivos estáticos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Desarrollo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Para ejecutar tests:
+```bash
+npm run test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Para construir la aplicación:
+```bash
+npm run build
+```
 
-## Learn More
+## Licencia
 
-To learn more about Next.js, take a look at the following resources:
+Este proyecto está bajo la Licencia MIT. Ver el archivo LICENSE para más detalles.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contacto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Para cualquier consulta o sugerencia, contacta a alidavila@example.com

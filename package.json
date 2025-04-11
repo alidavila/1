@@ -6,11 +6,11 @@
     "dev": "node server.js",
     "dev:next": "next dev -p 4000",
     "build": "next build",
-    "start": "node server.js",
-    "start:next": "next start -p 4000",
+    "start": "next start -p 4000",
     "lint": "next lint",
     "vercel-build": "next build",
-    "test-build": "next build && next start -p 4000"
+    "vercel-deploy": "vercel --prod",
+    "postinstall": "node ./clean-structure.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -35,5 +35,9 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

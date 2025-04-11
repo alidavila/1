@@ -21,11 +21,6 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
     datosGrafico: Array<{ anio: number; mes: number; aportado: number; total: number }>;
   } | null>(null);
   
-  // Calcular el interés compuesto cada vez que cambien los parámetros
-  useEffect(() => {
-    calcularInteres();
-  }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion, calcularInteres]);
-  
   // Función para validar entradas numéricas
   const validarNumero = (valor: string, max: number = Infinity): number => {
     const numero = parseFloat(valor);
@@ -33,7 +28,7 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
     return Math.min(numero, max);
   };
   
-  // Calcular interés compuesto - convertir a useCallback para evitar recreación en cada render
+  // Calcular interés compuesto - definido con useCallback antes de ser usado en useEffect
   const calcularInteres = useCallback(() => {
     // Validar entradas
     if (tasaAnual <= 0 || plazoAnios <= 0) {
@@ -79,6 +74,11 @@ export const CalculadoraInteres: React.FC<CalculadoraInteresProps> = ({ formatCu
       datosGrafico
     });
   }, [montoInicial, aporteMensual, tasaAnual, plazoAnios, frecuenciaCapitalizacion]);
+  
+  // Calcular el interés compuesto cada vez que cambien los parámetros
+  useEffect(() => {
+    calcularInteres();
+  }, [calcularInteres]);
   
   // Renderizar gráfico de barras
   const renderGrafico = () => {

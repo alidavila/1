@@ -7,13 +7,12 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     turbo: {
-      rules: {
-        '*.js': [
-          {
-            loader: 'babel-loader',
-          },
-        ],
-      },
+      rules: [
+        {
+          pattern: '**/*.js',
+          loader: 'babel-loader',
+        }
+      ],
     },
   },
   // Configuración para evitar problemas con webpack

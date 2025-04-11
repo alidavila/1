@@ -52,7 +52,7 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
   
   return (
     <motion.div
-      className="absolute z-10"
+      className="absolute z-10 hidden md:block" // Ocultar en móviles, mostrar en tablets y superior
       style={{
         top: section.position.top,
         left: section.position.left,
@@ -71,14 +71,12 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
           duration: 7,
           repeat: Infinity,
           ease: "easeInOut",
-          // Añadir un retraso aleatorio para cada sección
           delay: Math.random() * 2
         },
         y: {
           duration: 6,
           repeat: Infinity,
           ease: "easeInOut",
-          // Añadir un retraso aleatorio para cada sección
           delay: Math.random() * 2
         }
       }}
@@ -112,6 +110,34 @@ const SectionIcon = memo(({ section, isActive, onHover }: {
 // Asignar displayName para resolver el error de ESLint
 SectionIcon.displayName = 'SectionIcon';
 
+// Versión móvil para mostrar las opciones en forma de grid
+const MobileSectionGrid = memo(({ sections, onHover }: { 
+  sections: MainSection[], 
+  onHover: (title: string | null) => void
+}) => (
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full md:hidden mt-4">
+    {sections.map((section) => (
+      <Link key={section.title} href={section.path}>
+        <motion.div 
+          className="flex flex-col items-center p-3 bg-black/20 rounded-lg border border-yellow-600/20 hover:border-yellow-600/40 transition-colors"
+          onMouseEnter={() => onHover(section.title)}
+          onMouseLeave={() => onHover(null)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <div className="text-[#eab308] text-2xl mb-2">
+            {section.icon}
+          </div>
+          <h3 className="text-sm font-light text-yellow-500/90">
+            {section.title}
+          </h3>
+        </motion.div>
+      </Link>
+    ))}
+  </div>
+));
+MobileSectionGrid.displayName = 'MobileSectionGrid';
+
 // Componente de respuesta
 const ResponseBox = memo(({ activeSection, response, mainSections }: {
   activeSection: string | null,
@@ -119,7 +145,7 @@ const ResponseBox = memo(({ activeSection, response, mainSections }: {
   mainSections: MainSection[]
 }) => (
   <motion.div 
-    className="w-full max-w-2xl min-h-[100px] rounded-xl bg-black/40 border border-yellow-600/30 p-6 mb-8 relative z-10 -mt-40"
+    className="w-full max-w-2xl min-h-[100px] rounded-xl bg-black/40 border border-yellow-600/30 p-6 mb-8 relative z-10 md:-mt-40 mt-4" // Ajustado para móviles
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
@@ -150,7 +176,7 @@ ResponseBox.displayName = 'ResponseBox';
 
 // Componente para el monje central
 const MonkImage = memo(() => (
-  <div className="absolute inset-0 flex items-start justify-center">
+  <div className="absolute inset-0 flex items-start justify-center md:block hidden"> {/* Ocultar en móviles */}
     <div className="relative h-[80%] aspect-square flex justify-center items-center z-10">
       {/* Aura dorada sutil detrás del monje */}
       <div className="absolute inset-0 rounded-full bg-yellow-600/5 animate-pulse filter blur-md" 
@@ -192,6 +218,41 @@ const MonkImage = memo(() => (
 ));
 // Asignar displayName para resolver el error de ESLint
 MonkImage.displayName = 'MonkImage';
+
+// Versión móvil del monje, más pequeña y centrada
+const MobileMonkImage = memo(() => (
+  <div className="md:hidden flex justify-center items-center py-4">
+    <div className="relative w-32 h-32">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          y: [0, -8, 0]  // Menor flotación para móviles
+        }}
+        transition={{ 
+          duration: 0.7,
+          y: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        }}
+        className="relative h-full w-full"
+      >
+        <Image
+          src="/images/monje6.png"
+          alt="Monje Zen"
+          fill
+          style={{ objectFit: 'contain' }}
+          className="drop-shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+          priority
+        />
+      </motion.div>
+    </div>
+  </div>
+));
+MobileMonkImage.displayName = 'MobileMonkImage';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -362,11 +423,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Fondo simple sin partículas */}
-      
       <div className="relative container mx-auto py-4 px-4 min-h-screen flex flex-col items-center z-10 gap-4">
         {/* Título principal */}
-        <h1 className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 font-light tracking-wider relative z-10">
+        <h1 className="text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 font-light tracking-wider relative z-10">
           <span className="golden-glow">DANTE FINANCE</span>
         </h1>
         
@@ -378,14 +437,20 @@ export default function Home() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="¿Qué quieres saber sobre tus finanzas?"
-              className="w-full px-6 py-4 rounded-full bg-black/40 border border-yellow-600/30 text-white focus:outline-none focus:border-yellow-500/70 focus:ring-2 focus:ring-yellow-500/20 placeholder-yellow-100/30 transition-all duration-300"
+              className="w-full px-6 py-3 md:py-4 rounded-full bg-black/40 border border-yellow-600/30 text-white focus:outline-none focus:border-yellow-500/70 focus:ring-2 focus:ring-yellow-500/20 placeholder-yellow-100/30 transition-all duration-300"
             />
             <SubmitButton isLoading={isLoading} />
           </form>
-          </div>
+        </div>
         
-        {/* Contenedor central con el monje y las secciones */}
-        <div className="relative w-full max-w-4xl aspect-square mt-0 -mt-4">
+        {/* Monje móvil (solo visible en pantallas pequeñas) */}
+        <MobileMonkImage />
+        
+        {/* Grid de navegación para móviles */}
+        <MobileSectionGrid sections={mainSections} onHover={handleHover} />
+        
+        {/* Contenedor central con el monje y las secciones (visible solo en pantallas medianas y grandes) */}
+        <div className="relative w-full max-w-4xl aspect-square mt-0 -mt-4 hidden md:block">
           {/* Imagen del monje centrada */}
           <MonkImage />
           
@@ -414,8 +479,8 @@ export default function Home() {
         <div className="relative z-10 mt-auto text-center text-xs text-yellow-500/30">
           <p>DANTE © {new Date().getFullYear()} — Tu guía espiritual financiera</p>
         </div>
-            </div>
-            
+      </div>
+      
       {/* Estilos CSS para efectos de neón y brillos */}
       <style jsx global>{`
         .golden-glow {

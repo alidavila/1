@@ -8,14 +8,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    optimizeCss: true,
-    turbo: {
-      rules: {
-        '**/*.js': [
-          { loader: 'babel-loader' }
-        ]
-      },
-    },
+    optimizeCss: false,
   },
   // Configuración para evitar problemas con webpack
   webpack: (config, { isServer }) => {

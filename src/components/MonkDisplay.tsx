@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import FloatingTags from './FloatingTags';
-import { EtiquetaKey } from '../../types';
+import { EtiquetaKey } from '@/types';
 
 const MonkDisplay = () => {
   const [hoverMessage, setHoverMessage] = useState<string>('');

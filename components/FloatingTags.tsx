@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { EtiquetaKey } from '../../types';
+import { EtiquetaKey } from '@/types';
 
 interface FloatingTagsProps {
   onTagHover: (tag: EtiquetaKey, message: string) => void;

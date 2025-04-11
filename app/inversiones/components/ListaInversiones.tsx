@@ -7,7 +7,7 @@ import {
   FaChevronDown, FaArrowUp, FaArrowDown, FaBitcoin, 
   FaChartLine, FaBuilding, FaGlobe
 } from 'react-icons/fa';
-import { Inversion } from '../../../types';
+import { Inversion } from '@/types';
 
 interface ListaInversionesProps {
   inversiones: Inversion[];

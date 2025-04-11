@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { FaCoins, FaChartLine, FaArrowUp, FaArrowDown, 
   FaTimes, FaPlus, FaExchangeAlt, FaQuestion, FaLightbulb, FaMinus 
 } from 'react-icons/fa';
-import { Inversion, TipoActivo } from '../../../types';
+import { Inversion, TipoActivo } from '@/types';
 import { registerInvestment } from '../../../src/lib/n8n-api';
 
 interface RegistrarInversionProps {

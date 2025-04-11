@@ -12,7 +12,7 @@ import {
   FaPercentage, FaChartArea, FaExclamationTriangle, FaCheckCircle
 } from 'react-icons/fa';
 // Importar tipos correctamente desde la ruta types
-import { Transaccion, CategoriaGasto, DatosAnalisis, PreguntaAnalisis, Deuda, PatrimonioData } from '../../types';
+import { Transaccion, CategoriaGasto, DatosAnalisis, PreguntaAnalisis, Deuda, PatrimonioData } from '@/types';
 
 // Interfaz para la distribución de ingresos
 interface DistribucionIngreso {

@@ -4,7 +4,7 @@ import React from 'react';
 
 import { useEffect, useState } from 'react';
 import { getFinancialData } from '../lib/n8n-api';
-import { FinancialData, PatrimonioData, FlujoCajaData } from '../../types';
+import { FinancialData, PatrimonioData, FlujoCajaData } from '@/types';
 
 const FinancialDashboard = () => {
   const [financialData, setFinancialData] = useState<FinancialData | null>(null);

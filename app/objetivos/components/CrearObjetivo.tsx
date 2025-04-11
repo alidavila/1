@@ -6,7 +6,7 @@ import {
   FaCoins, FaRegCalendarAlt, FaCheck, FaTimes, FaStar,
   FaHome, FaCar, FaPlane, FaCreditCard, FaStore, FaChartLine, FaChevronDown
 } from 'react-icons/fa';
-import { Objetivo, ObjetivoCategoria } from '../../../types';
+import { Objetivo, ObjetivoCategoria } from '@/types';
 
 interface CrearObjetivoProps {
   objetivo: Objetivo | null;
@@ -20,10 +20,10 @@ export const CrearObjetivo: React.FC<CrearObjetivoProps> = ({
   onCancelar
 }) => {
   // Estado inicial del formulario envuelto en useMemo para evitar recreación en cada render
-  const estadoInicial = useMemo(() => ({
+  const estadoInicial = useMemo<Objetivo>(() => ({
     id: '',
     nombre: '',
-    categoria: 'ahorro_emergencia',
+    categoria: 'ahorro_emergencia' as ObjetivoCategoria,
     valorMeta: 0,
     valorActual: 0,
     montoSugerido: 0,
@@ -60,13 +60,21 @@ export const CrearObjetivo: React.FC<CrearObjetivoProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
-    // Convertir a número si es un campo numérico
-    const parsedValue = type === 'number' ? parseFloat(value) || 0 : value;
-    
-    setFormValues(prev => ({
-      ...prev,
-      [name]: parsedValue
-    }));
+    if (name === 'categoria') {
+      // Asegurarse de que categoria sea tratada como ObjetivoCategoria
+      setFormValues(prev => ({
+        ...prev,
+        categoria: value as ObjetivoCategoria
+      }));
+    } else {
+      // Convertir a número si es un campo numérico
+      const parsedValue = type === 'number' ? parseFloat(value) || 0 : value;
+      
+      setFormValues(prev => ({
+        ...prev,
+        [name]: parsedValue
+      }));
+    }
     
     // Actualizar fecha estimada automáticamente si cambia el valor meta o el monto sugerido
     if (fechaAutoCalculada && (name === 'valorMeta' || name === 'montoSugerido' || name === 'valorActual')) {

@@ -6,7 +6,7 @@ import {
   FaRegCheckCircle, FaSort, FaChevronDown, FaChevronUp, 
   FaDownload, FaTrophy
 } from 'react-icons/fa';
-import { Objetivo } from '../../../types';
+import { Objetivo } from '@/types';
 
 interface ObjetivosCompletadosProps {
   objetivos: Objetivo[];

@@ -451,9 +451,6 @@ export default function Home() {
           mainSections={mainSections} 
         />
         
-        {/* Dashboard general resumen - Componente memoizado para el dashboard */}
-        <Dashboard dashboardData={dashboardData} />
-        
         {/* Pie de página */}
         <div className="relative z-10 mt-auto text-center text-xs text-yellow-500/30">
           <p>DANTE © {new Date().getFullYear()} — Tu guía espiritual financiera</p>
